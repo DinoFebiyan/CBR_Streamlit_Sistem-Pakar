@@ -42,6 +42,7 @@ def load_and_encode_frames(folder_path="frames"):
 def inject_theme_css():
     """
     Menyuntikkan CSS tema modern:
+    - Seluruh kartu checkbox interaktif 100% responsif terhadap klik
     - Palet warna Oranye & Putih Bersih yang nyaman di mata
     - Card diagnosa putih bersih berborder oranye segar dengan teks oranye tua pekat
     - Ruang lebar (max-width: 1280px) agar animasi jeruk bebas melebar tanpa terpotong
@@ -88,33 +89,48 @@ def inject_theme_css():
         margin-right: auto !important;
     }
 
-    /* Kartu Checkbox Gejala Putih Bersih dengan Teks Gelap Kontras */
+    /* ==============================================================
+       KARTU CHECKBOX GEJALA - 100% RESPONSIF & MUDAH DIKLIK
+       ============================================================== */
     div[data-testid="stCheckbox"] {
         background-color: #FFFFFF !important;
         border: 1.5px solid #E2E8F0 !important;
         border-radius: 12px !important;
-        padding: 12px 18px !important;
+        padding: 14px 20px !important;
         margin-bottom: 10px !important;
-        transition: all 0.22s ease-in-out !important;
+        transition: all 0.2s ease-in-out !important;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03) !important;
         max-width: 960px !important;
         margin-left: auto !important;
         margin-right: auto !important;
+        cursor: pointer !important;
+        pointer-events: auto !important;
     }
 
     div[data-testid="stCheckbox"]:hover {
         background-color: #FFF9F2 !important;
         border-color: #FFB74D !important;
-        transform: translateX(5px) !important;
+        transform: translateX(4px);
         box-shadow: 0 6px 18px rgba(255, 111, 0, 0.1) !important;
+    }
+
+    /* Pastikan seluruh area label menangkap klik */
+    div[data-testid="stCheckbox"] label {
+        cursor: pointer !important;
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        pointer-events: auto !important;
     }
 
     /* Teks Checkbox Sangat Jelas (Dark Charcoal #0F172A) */
     div[data-testid="stCheckbox"] label p {
         color: #0F172A !important;
-        font-size: 0.98rem !important;
+        font-size: 1rem !important;
         font-weight: 600 !important;
         line-height: 1.5 !important;
+        margin: 0 !important;
+        cursor: pointer !important;
     }
 
     /* Checkbox active state */
@@ -160,42 +176,54 @@ def inject_theme_css():
     }
 
     /* ==============================================================
-       KOTAK HASIL DIAGNOSA (st.success) - TEMA ORANYE PUTIH BERSIH
-       Memperbaiki warna gelap / hijau yang membuat sakit mata
+       BLOK NAMA PENYAKIT (st.success) - GARIS WARNA ORANYE & TEKS BESAR
+       Nama penyakit di dalam blok garis warna orange, teks dibuat agak besar
        ============================================================== */
-    div[data-testid="stAlert"],
+    div[data-testid="stAlert"] {
+        background: #FFFFFF !important;
+        background-color: #FFFFFF !important;
+        border: 2.5px solid #FF6F00 !important;
+        border-radius: 16px !important;
+        box-shadow: 0 8px 25px rgba(255, 111, 0, 0.12) !important;
+        max-width: 960px !important;
+        margin: 12px auto 20px auto !important;
+        padding: 20px 28px !important;
+    }
+
+    /* Bersihkan border, shadow, dan background dari elemen anak di dalam alert */
     div[data-testid="stAlert"] > div,
     div[data-testid="stNotificationContentSuccess"],
     div[data-testid="stAlertContent"],
-    .stAlert,
     .stAlert > div {
-        background: #FFFFFF !important;
-        background-color: #FFFFFF !important;
-        border: 2.5px solid #FF9800 !important;
-        border-radius: 18px !important;
-        box-shadow: 0 10px 30px rgba(255, 111, 0, 0.12) !important;
-        max-width: 960px !important;
-        margin: 24px auto !important;
-        padding: 18px 24px !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
 
     /* Ubah Icon Checklist Streamlit Menjadi Oranye Segar */
     div[data-testid="stAlert"] svg {
         fill: #FF6F00 !important;
         color: #FF6F00 !important;
+        width: 30px !important;
+        height: 30px !important;
     }
 
-    /* Teks Hasil Diagnosa - Oranye Tua Pekat & Sangat Jelas di Atas Latar Putih */
+    /* Teks Nama Penyakit di Dalam Blok Garis Oranye - Dibuat Agak Besar */
     div[data-testid="stAlert"] p,
     div[data-testid="stAlert"] span,
     div[data-testid="stAlertContent"] p {
         color: #D84315 !important;
-        font-size: 1.3rem !important;
+        font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif !important;
+        font-size: 1.7rem !important;
         font-weight: 800 !important;
         letter-spacing: -0.01em !important;
-        line-height: 1.5 !important;
+        line-height: 1.35 !important;
         background: transparent !important;
         text-shadow: none !important;
+        margin: 0 !important;
     }
 
     /* Detail Similarity Text & Nilai Similarity Utama */
@@ -213,10 +241,11 @@ def inject_theme_css():
 
 def render_hero_sequence_section(frames_data):
     """
-    Merender Hero Section dengan fitur Scroll-Lock cerdas (Apple Style):
-    - Saat frame sedang berjalan (masih di tengah): scroll layar MATI agar frame berputar penuh di tempat
-    - Saat frame sudah habis (jeruk terbelah sempurna): scroll layar NYALA dan TIDAK kembali ke awal lagi
-    - Jeruk diposisikan di pojok bawah layar saat awal dibuka dan melebar bebas tanpa terpotong
+    Merender Hero Section yang bersih:
+    - Tanpa badge kondisi buah & tanpa teks instruksi scroll (sesuai instruksi)
+    - Scroll-lock murni berbasis event.preventDefault() (tanpa merusak overflow DOM / checkbox)
+    - Saat frame habis, langsung scroll ke konten tanpa me-reset ke awal
+    - Posisi awal jeruk di pojok bawah layar dan melebar bebas tanpa terpotong
     """
     total_frames = len(frames_data)
     frames_json = json.dumps(frames_data)
@@ -247,11 +276,10 @@ def render_hero_sequence_section(frames_data):
           position: relative;
           width: 100%;
           height: 100%;
-          min-height: 860px;
+          min-height: 650px;
           background: #FAFAFA;
           display: flex;
           flex-direction: column;
-          justify-content: space-between;
           align-items: center;
           overflow: hidden;
         }}
@@ -265,142 +293,82 @@ def render_hero_sequence_section(frames_data):
           z-index: 1;
           cursor: ns-resize;
         }}
-        /* Tipografi Mengambang di Bagian Atas Layar */
-        .typography-overlay {{
-          position: relative;
-          z-index: 10;
-          padding: 32px 24px 0 24px;
+        /* Tipografi Bagian Atas: HANYA TULISAN BESAR JERUK ANDA? (GAP RAPAT) */
+        .top-title-overlay {{
+          position: absolute;
+          top: 22px;
+          left: 0;
+          width: 100%;
           text-align: center;
+          z-index: 10;
           pointer-events: none;
-          max-width: 780px;
-        }}
-        .badge-pill {{
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          background: #FFF3E0;
-          border: 1px solid #FFE0B2;
-          color: #E65100;
-          font-size: 0.82rem;
-          font-weight: 700;
-          padding: 6px 16px;
-          border-radius: 30px;
-          margin-bottom: 12px;
-          letter-spacing: 0.03em;
-          box-shadow: 0 2px 8px rgba(230, 81, 0, 0.08);
+          padding: 0 20px;
         }}
         .title-first {{
           font-family: 'Outfit', sans-serif;
-          font-size: clamp(2.8rem, 5.5vw, 4.4rem);
+          font-size: clamp(3rem, 6.5vw, 4.8rem);
           font-weight: 900;
           color: #0F172A;
           line-height: 1.05;
           letter-spacing: -0.03em;
+          text-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
+        }}
+
+        /* Tipografi Melayang Tepat Di Atas Frame Jeruk: MEMBUSUK! (DIPERBESAR MAKSIMAL) */
+        .floating-rot-wrapper {{
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          z-index: 25;
+          pointer-events: none;
+          text-align: center;
+          width: 100%;
+          max-width: 850px;
+          padding: 0 16px;
         }}
         .title-second {{
+          display: inline-block;
           font-family: 'Outfit', sans-serif;
-          font-size: clamp(3rem, 6vw, 4.8rem);
+          font-size: clamp(4.6rem, 11.5vw, 8.5rem);
           font-weight: 900;
           color: #D84315;
-          line-height: 1.05;
-          letter-spacing: -0.03em;
-          margin-top: 2px;
-          margin-bottom: 12px;
+          line-height: 0.95;
+          letter-spacing: -0.04em;
           opacity: 0;
-          transform: translateY(20px) scale(0.96);
-          filter: blur(8px);
-          transition: opacity 0.32s ease, transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.32s ease;
-          text-shadow: 0 4px 20px rgba(216, 67, 21, 0.28);
+          transform: translateY(35px) scale(0.85);
+          filter: blur(14px);
+          transition: opacity 0.35s ease, transform 0.42s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.35s ease;
+          text-shadow: 0 14px 44px rgba(216, 67, 21, 0.5), 0 3px 12px rgba(0, 0, 0, 0.12);
         }}
         .title-second.active {{
           opacity: 1;
           transform: translateY(0) scale(1);
           filter: blur(0);
+          animation: floatHover 3.2s ease-in-out infinite alternate;
         }}
-        .fruit-status {{
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          padding: 7px 16px;
-          background: rgba(255, 255, 255, 0.95);
-          backdrop-filter: blur(10px);
-          border-radius: 12px;
-          border: 1px solid #E2E8F0;
-          font-size: 0.86rem;
-          font-weight: 700;
-          color: #334155;
-          box-shadow: 0 4px 14px rgba(0,0,0,0.05);
-          transition: all 0.3s ease;
-        }}
-        .status-dot {{
-          width: 9px;
-          height: 9px;
-          border-radius: 50%;
-          background-color: #10B981;
-          transition: background-color 0.3s ease;
-        }}
-        /* Petunjuk Scroll Minimalis */
-        .scroll-cue {{
-          position: relative;
-          z-index: 10;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 6px;
-          color: #64748B;
-          font-size: 0.78rem;
-          font-weight: 700;
-          letter-spacing: 0.05em;
-          text-transform: uppercase;
-          pointer-events: none;
-          opacity: 1;
-          transition: opacity 0.35s ease;
-          margin-bottom: 24px;
-        }}
-        .mouse-icon {{
-          width: 22px;
-          height: 34px;
-          border: 2px solid #CBD5E1;
-          border-radius: 12px;
-          position: relative;
-          display: flex;
-          justify-content: center;
-        }}
-        .wheel-dot {{
-          width: 4px;
-          height: 8px;
-          background-color: #FF6F00;
-          border-radius: 2px;
-          position: absolute;
-          top: 6px;
-          animation: wheelScroll 1.6s infinite ease-in-out;
-        }}
-        @keyframes wheelScroll {{
-          0% {{ transform: translateY(0); opacity: 1; }}
-          100% {{ transform: translateY(14px); opacity: 0; }}
+        @keyframes floatHover {{
+          0% {{
+            transform: translateY(0px) scale(1);
+          }}
+          100% {{
+            transform: translateY(-14px) scale(1.02);
+          }}
         }}
       </style>
     </head>
     <body>
       <div class="hero-container" id="hero-container">
-        <!-- Canvas Gambar Jeruk Penuh Lebar -->
         <canvas id="hero-canvas"></canvas>
 
-        <div class="typography-overlay">
-          <div class="badge-pill">🍊 Sistem Pakar CBR Tanaman Jeruk • Dino Febiyan (3DRPL)</div>
+        <!-- Bagian Atas: HANYA Teks Besar "Jeruk Anda?" -->
+        <div class="top-title-overlay">
           <div class="title-first">Jeruk Anda?</div>
-          <div class="title-second" id="text-rot">Membusuk!</div>
-          <div class="fruit-status" id="fruit-status">
-            <span class="status-dot" id="status-dot"></span>
-            <span id="status-text">Kondisi Buah: Segar & Sehat (100%)</span>
-          </div>
         </div>
 
-        <div class="scroll-cue" id="scroll-cue">
-          <div class="mouse-icon">
-            <div class="wheel-dot"></div>
-          </div>
-          <span>Scroll untuk memutar frame</span>
+        <!-- Melayang Tepat Di Atas Frame Jeruk: "Membusuk!" -->
+        <div class="floating-rot-wrapper">
+          <div class="title-second" id="text-rot">Membusuk!</div>
         </div>
       </div>
 
@@ -410,9 +378,6 @@ def render_hero_sequence_section(frames_data):
         const canvas = document.getElementById('hero-canvas');
         const ctx = canvas.getContext('2d');
         const textRot = document.getElementById('text-rot');
-        const statusDot = document.getElementById('status-dot');
-        const statusText = document.getElementById('status-text');
-        const scrollCue = document.getElementById('scroll-cue');
 
         const pDoc = window.parent.document;
         const pWin = window.parent;
@@ -463,8 +428,8 @@ def render_hero_sequence_section(frames_data):
           ctx.fillStyle = '#FAFAFA';
           ctx.fillRect(0, 0, rect.width, rect.height);
 
-          // Penskalaan Proporsional agar lebar tidak terpotong
-          const preferredHeight = Math.min(rect.height * 0.58, 410);
+          // Penskalaan Proporsional agar lebar tidak terpotong saat membelah
+          const preferredHeight = Math.min(rect.height * 0.62, 410);
           const scaleByHeight = preferredHeight / 693;
           const maxAllowedWidth = rect.width * 0.95;
           const scaleByWidth = maxAllowedWidth / img.width;
@@ -476,8 +441,8 @@ def render_hero_sequence_section(frames_data):
           // Posisi X di tengah persis
           const drawX = (rect.width - drawW) / 2;
           
-          // Posisi Y di pojok bawah layar saat awal dibuka (scroll = 0)
-          const drawY = rect.height - drawH - 30;
+          // Posisi Y: Rapat dan dekat di bawah tulisan "Jeruk Anda?" (tanpa gap kosong yang jauh)
+          const drawY = 118;
 
           ctx.drawImage(img, drawX, drawY, drawW, drawH);
           ctx.restore();
@@ -503,66 +468,17 @@ def render_hero_sequence_section(frames_data):
           return top;
         }}
 
-        // Fungsi Kunci & Buka Scroll Layar Utama Streamlit
-        function lockPageScroll() {{
-          const containers = [
-            pDoc.querySelector('[data-testid="stAppViewContainer"]'),
-            pDoc.querySelector('section.main'),
-            pDoc.body,
-            pDoc.documentElement
-          ];
-          containers.forEach(el => {{
-            if (el) el.style.overflow = 'hidden';
-          }});
-        }}
-
-        function unlockPageScroll() {{
-          const containers = [
-            pDoc.querySelector('[data-testid="stAppViewContainer"]'),
-            pDoc.querySelector('section.main'),
-            pDoc.body,
-            pDoc.documentElement
-          ];
-          containers.forEach(el => {{
-            if (el) el.style.overflow = '';
-          }});
-        }}
-
-        // Inisialisasi State:
-        // Jika user sedang berada di bawah (misal saat centang checkbox / diagnosa), jangan kunci scroll
+        // Inisialisasi:
+        // Jika user berada di bawah (sedang memilih gejala / diagnosa), frame tetap di posisi 1.0 (habis)
         const initialTop = getScrollPosition();
-        let targetProgress = initialTop > 60 ? 1.0 : 0.0;
+        let targetProgress = initialTop > 80 ? 1.0 : 0.0;
         let currentProgress = targetProgress;
 
-        if (initialTop <= 60) {{
-          lockPageScroll(); // Matikan scroll layar awal saat frame masih di hero
-        }} else {{
-          unlockPageScroll();
-        }}
-
         function updateUI(progress) {{
-          if (progress > 0.04) {{
-            scrollCue.style.opacity = '0';
-          }} else {{
-            scrollCue.style.opacity = '1';
-          }}
-
-          // Teks 'Membusuk!' aktif saat mencapai fase pembusukan
           if (progress >= 0.42) {{
             textRot.classList.add('active');
-            statusDot.style.backgroundColor = '#D84315';
-            statusText.innerText = 'Kondisi Buah: Infeksi Akut & Membusuk';
-            statusDot.parentElement.style.borderColor = '#FFAB91';
-          }} else if (progress >= 0.20) {{
-            textRot.classList.remove('active');
-            statusDot.style.backgroundColor = '#F59E0B';
-            statusText.innerText = 'Kondisi Buah: Terindikasi Gejala Penyakit';
-            statusDot.parentElement.style.borderColor = '#FFE082';
           }} else {{
             textRot.classList.remove('active');
-            statusDot.style.backgroundColor = '#10B981';
-            statusText.innerText = 'Kondisi Buah: Segar & Sehat (100%)';
-            statusDot.parentElement.style.borderColor = '#E2E8F0';
           }}
         }}
 
@@ -580,49 +496,40 @@ def render_hero_sequence_section(frames_data):
         requestAnimationFrame(renderLoop);
 
         // ==============================================================
-        // LOGIKA SCROLL-LOCK CERDAS (APPLE STYLE):
-        // 1. Saat frame masih berjalan: scroll layar MATI, scroll mouse memutar frame
-        // 2. Saat frame sudah habis: scroll layar NYALA, langsung scroll halaman ke bawah
-        // 3. Frame TIDAK KEMBALI KE AWAL lagi saat habis
+        // LOGIKA SCROLL MURNI BEBAS-GLITCH (TIDAK MERUSAK CHECKBOX / OVERFLOW)
+        // 1. Saat frame masih berjalan (targetProgress < 1.0): tahan scroll layar dengan e.preventDefault()
+        // 2. Saat frame sudah habis (targetProgress = 1.0): lepaskan e.preventDefault(), halaman langsung scroll ke bawah
+        // 3. Frame TIDAK KEMBALI KE AWAL saat habis
         // ==============================================================
         function handleWheelScroll(e) {{
           const currentTop = getScrollPosition();
+          const rect = canvas.getBoundingClientRect();
+          const isHeroInView = rect.top <= 40 && rect.bottom >= 120;
 
-          // KONDISI 1: Berada di atas dan frame belum habis (0.0 <= targetProgress < 1.0)
-          if (currentTop <= 15 && targetProgress < 1.0) {{
+          // KONDISI 1: User di atas hero dan frame belum habis
+          if (isHeroInView && currentTop <= 20 && targetProgress < 1.0) {{
             if (e.deltaY > 0) {{
               // Scroll ke bawah: putar frame maju
               e.preventDefault();
-              targetProgress = Math.min(1.0, targetProgress + e.deltaY * 0.0016);
-              
-              if (targetProgress >= 0.99) {{
-                targetProgress = 1.0;
-                unlockPageScroll(); // Frame HABIS: NYALAKAN SCROLL LAYAR!
-              }} else {{
-                lockPageScroll(); // Frame BELUM HABIS: MATIKAN SCROLL LAYAR!
-              }}
+              targetProgress = Math.min(1.0, targetProgress + e.deltaY * 0.0018);
             }} else if (e.deltaY < 0 && targetProgress > 0.0) {{
               // Scroll ke atas: putar frame mundur
               e.preventDefault();
-              targetProgress = Math.max(0.0, targetProgress + e.deltaY * 0.0016);
-              lockPageScroll();
+              targetProgress = Math.max(0.0, targetProgress + e.deltaY * 0.0018);
             }}
           }}
           // KONDISI 2: Frame SUDAH HABIS (targetProgress >= 1.0)
           else if (targetProgress >= 1.0) {{
-            unlockPageScroll(); // Pastikan scroll layar selalu nyala
-            
             // Jika user scroll ke atas sampai mentok ke puncak halaman (top <= 5), barulah frame bisa diputar mundur
             if (currentTop <= 5 && e.deltaY < 0) {{
               e.preventDefault();
-              targetProgress = Math.max(0.0, targetProgress + e.deltaY * 0.0016);
-              lockPageScroll();
+              targetProgress = Math.max(0.0, targetProgress + e.deltaY * 0.0018);
             }}
-            // Jika scroll ke bawah, BIARKAN HALAMAN BERGULIR SECARA ALAMI (TIDAK e.preventDefault)
+            // Jika scroll ke bawah, BIARKAN HALAMAN BERGULIR BEBAS KE CHECKBOX & FORM DIAGNOSA
           }}
         }}
 
-        // Touch handling untuk layar sentuh / mobile
+        // Touch handling untuk layar sentuh
         let touchStartY = 0;
         function handleTouchStart(e) {{
           if (e.touches && e.touches.length > 0) {{
@@ -637,33 +544,26 @@ def render_hero_sequence_section(frames_data):
           touchStartY = currentY;
 
           const currentTop = getScrollPosition();
+          const rect = canvas.getBoundingClientRect();
+          const isHeroInView = rect.top <= 40 && rect.bottom >= 120;
 
-          if (currentTop <= 15 && targetProgress < 1.0) {{
+          if (isHeroInView && currentTop <= 20 && targetProgress < 1.0) {{
             if (deltaY > 0) {{
               e.preventDefault();
               targetProgress = Math.min(1.0, targetProgress + deltaY * 0.0035);
-              if (targetProgress >= 0.99) {{
-                targetProgress = 1.0;
-                unlockPageScroll();
-              }} else {{
-                lockPageScroll();
-              }}
             }} else if (deltaY < 0 && targetProgress > 0.0) {{
               e.preventDefault();
               targetProgress = Math.max(0.0, targetProgress + deltaY * 0.0035);
-              lockPageScroll();
             }}
           }} else if (targetProgress >= 1.0) {{
-            unlockPageScroll();
             if (currentTop <= 5 && deltaY < 0) {{
               e.preventDefault();
               targetProgress = Math.max(0.0, targetProgress + deltaY * 0.0035);
-              lockPageScroll();
             }}
           }}
         }}
 
-        // Pasang event listeners pada komponen hero dan window utama
+        // Pasang event listeners pada komponen hero dan window
         const heroEl = document.getElementById('hero-container');
         heroEl.addEventListener('wheel', handleWheelScroll, {{ passive: false }});
         pWin.addEventListener('wheel', handleWheelScroll, {{ passive: false }});
@@ -685,14 +585,14 @@ def render_hero_sequence_section(frames_data):
     </body>
     </html>
     """
-    components.html(component_html, height=860, scrolling=False)
+    components.html(component_html, height=650, scrolling=False)
 
 def render_big_orange_callout_section():
     """
     Merender Section Teks Besar dengan Background Oranye Hangat (Bergaya Apple):
     - Background oranye segar yang memukau
     - Judul besar 'Cek penyakit jeruk Anda sebelum telat!' berwarna putih murni tebal
-    - Beri jarak atas lega (margin-top: 80px) agar memberi ruang saat jeruk terbelah
+    - Jarak atas lega (margin-top: 80px) agar memberi ruang saat jeruk terbelah
     """
     st.markdown("""
     <div style="
@@ -706,15 +606,23 @@ def render_big_orange_callout_section():
         color: #FFFFFF;
     ">
         <div style="
-            display: inline-block;
-            color: #FFE082;
-            font-size: 0.92rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            padding: 7px 22px;
+            border-radius: 40px;
+            color: #FFFFFF;
+            font-size: 0.95rem;
             font-weight: 800;
-            letter-spacing: 0.12em;
+            letter-spacing: 0.14em;
             text-transform: uppercase;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         ">
-            DIAGNOSA DINI CASE-BASED REASONING
+            🍊 ORANGECHECKER
         </div>
         <h1 style="
             margin: 0 0 16px 0;
@@ -742,6 +650,72 @@ def render_big_orange_callout_section():
     </div>
     """, unsafe_allow_html=True)
 
+def tampilkan_footer():
+    """
+    Merender footer elegan di bagian paling bawah halaman:
+    Identitas Sistem Pakar CBR Tanaman Jeruk & Mahasiswa (Dino Febiyan).
+    """
+    st.markdown("""
+    <div style="
+        margin-top: 80px;
+        padding: 40px 20px 30px 20px;
+        text-align: center;
+        border-top: 1.5px solid #F1F5F9;
+        background: #FAFAFA;
+        color: #64748B;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    ">
+        <div style="
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #FFFFFF;
+            border: 1.5px solid #FFE0B2;
+            padding: 10px 24px;
+            border-radius: 50px;
+            box-shadow: 0 4px 16px rgba(255, 111, 0, 0.08);
+            margin-bottom: 14px;
+        ">
+            <span style="font-size: 1.25rem;">🍊</span>
+            <span style="font-weight: 800; color: #E65100; font-size: 1rem; letter-spacing: -0.01em;">OrangeChecker</span>
+            <span style="color: #CBD5E1;">•</span>
+            <span style="font-weight: 600; color: #334155; font-size: 0.95rem;">Sistem Pakar CBR Tanaman Jeruk</span>
+        </div>
+        <p style="
+            margin: 6px 0 0 0;
+            font-size: 0.88rem;
+            color: #64748B;
+            font-weight: 600;
+        ">
+<div style="
+    background-color: #FFFFFF;
+    border: 2px solid #FF9800;
+    border-radius: 16px;
+    padding: 18px 24px;
+    margin: 32px auto 12px auto;
+    max-width: 960px;
+    box-shadow: 0 8px 24px rgba(255, 111, 0, 0.1);
+    text-align: center;
+    font-family: sans-serif;
+">
+    <p style="margin: 0 0 6px 0; color: #D84315; font-size: 1.05rem;">
+        Dikembangkan oleh: <b>Dino Febiyan</b> &mdash; NIM <b>362458302043</b>
+    </p>
+    <p style="margin: 0 0 12px 0; color: #5D4037; font-size: 0.95rem;">
+        Kelas <b>3D</b> &bull; Prodi <b>Teknologi Rekayasa Perangkat Lunak (TRPL)</b> &bull; Mata Kuliah <b>Sistem Pendukung Keputusan</b>
+    </p>
+    <div style="border-top: 1px dashed #FFCC80; padding-top: 10px; font-size: 0.88rem; color: #6D4C41;">
+        Referensi Artikel: 
+        <a href="https://ojs.trigunadharma.ac.id/index.php/jsi/article/download/8463/3141" 
+           target="_blank" 
+           style="color: #EF6C00; font-weight: 700; text-decoration: none;">
+           Sistem Pakar Mendiagnosa Penyakit Pada Tanaman Jeruk Sunkist Dengan Metode Case Based Reasoning (CBR) &#8599;
+        </a>
+    </div>
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
 def tampilkan_hero_animasi():
     """
     Fungsi utama yang dipanggil pada app.py.
@@ -750,7 +724,7 @@ def tampilkan_hero_animasi():
     """
     try:
         st.set_page_config(
-            page_title="Sistem Pakar CBR Jeruk",
+            page_title="OrangeChecker",
             page_icon="🍊",
             layout="wide",
             initial_sidebar_state="collapsed"
@@ -758,15 +732,15 @@ def tampilkan_hero_animasi():
     except Exception:
         pass
 
-    # 1. Suntikkan styling tema dengan kontras warna tinggi & ruang lebar
+    # 1. Suntikkan styling tema dengan kontras warna tinggi & checkbox responsif
     inject_theme_css()
 
-    # 2. Muat frame gambar dan render Hero Section dengan Scroll-Lock cerdas
+    # 2. Muat frame gambar dan render Hero Section Tajam di Pojok Bawah Layar Saat Dibuka
     frames = load_and_encode_frames("frames")
     if frames:
         render_hero_sequence_section(frames)
     else:
-        st.warning("Folder 'frames' tidak ditemukan atau tidak berisi gambar. Pastikan folder 'frames' tersedia di direktori proyek.")
+        st.warning("Folder 'frames' tidak ditemukan atau tidak berisi gambar")
 
     # 3. Tampilkan Section Teks Besar dengan Background Warna Oranye
     render_big_orange_callout_section()

@@ -1,7 +1,7 @@
 import streamlit as st
 import math
 import pandas as pd
-from animasi_hero import tampilkan_hero_animasi
+from animasi_hero import tampilkan_hero_animasi, tampilkan_footer
 
 # Panggil fungsi antarmuka animasi Hero & Tema Oranye-Putih di bagian paling atas
 tampilkan_hero_animasi()
@@ -57,9 +57,13 @@ if st.button("Proses Diagnosa"):
             nilaiTerbesar = hasil_akhir[i]
             namaPenyakitTerbesar = df_penyakit[i]
 
-    st.success(f"Penyakit Terdiagnosa : {namaPenyakitTerbesar}")
+    st.subheader("Penyakit Terdiagnosa :")
+    st.success(namaPenyakitTerbesar)
     st.write(f"Nilai Cosine Similarity : {nilaiTerbesar:.4f}")
 
     st.subheader("Detail Similarity")
     for i in range(len(df_penyakit)):
         st.write(f"{df_penyakit[i]} : {hasil_akhir[i]:.4f}")
+
+# Footer aplikasi di bagian bawah
+tampilkan_footer()
