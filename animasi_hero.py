@@ -42,9 +42,9 @@ def load_and_encode_frames(folder_path="frames"):
 def inject_theme_css():
     """
     Menyuntikkan CSS tema modern:
-    - Palet warna kontras tinggi (Dark Charcoal #0F172A di atas putih, White #FFFFFF di atas orange)
-    - Kartu checklist gejala yang bersih, jelas, dan sangat mudah dibaca
-    - Tombol diagnosa menonjol dengan efek bayangan elegan
+    - Palet warna Oranye & Putih Bersih yang nyaman di mata
+    - Card diagnosa putih bersih berborder oranye segar dengan teks oranye tua pekat
+    - Ruang lebar (max-width: 1280px) agar animasi jeruk bebas melebar tanpa terpotong
     """
     st.markdown("""
     <style>
@@ -57,11 +57,11 @@ def inject_theme_css():
         color: #0F172A !important;
     }
 
-    /* Container Max Width */
+    /* Container Max Width Diperlebar agar Animasi Jeruk Bebas Melebar */
     .block-container {
-        padding-top: 1.5rem !important;
-        padding-bottom: 5rem !important;
-        max-width: 1040px !important;
+        padding-top: 2rem !important;
+        padding-bottom: 6rem !important;
+        max-width: 1280px !important;
         margin: 0 auto !important;
     }
 
@@ -71,7 +71,7 @@ def inject_theme_css():
         letter-spacing: -0.02em !important;
     }
 
-    /* Judul 'Pilih Gejala' yang Tegas & Kontras Tinggi */
+    /* Judul 'Pilih Gejala' & 'Detail Similarity' */
     .stApp h2, .stApp h3, h2#pilih-gejala {
         color: #0F172A !important;
         font-weight: 800 !important;
@@ -83,17 +83,23 @@ def inject_theme_css():
         gap: 12px !important;
         border-left: 5px solid #FF6F00 !important;
         padding-left: 14px !important;
+        max-width: 960px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
 
-    /* Kartu Checkbox Gejala Putih Bersih dengan Teks Gelap Tegas */
+    /* Kartu Checkbox Gejala Putih Bersih dengan Teks Gelap Kontras */
     div[data-testid="stCheckbox"] {
         background-color: #FFFFFF !important;
         border: 1.5px solid #E2E8F0 !important;
         border-radius: 12px !important;
         padding: 12px 18px !important;
-        margin-bottom: 9px !important;
+        margin-bottom: 10px !important;
         transition: all 0.22s ease-in-out !important;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03) !important;
+        max-width: 960px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
 
     div[data-testid="stCheckbox"]:hover {
@@ -117,13 +123,20 @@ def inject_theme_css():
         border-color: #FF6F00 !important;
     }
 
-    /* Tombol "Proses Diagnosa" Oranye Segar dengan Teks Putih Tebal */
+    /* Tombol "Proses Diagnosa" */
+    div.stButton {
+        display: flex !important;
+        justify-content: center !important;
+        max-width: 960px !important;
+        margin: 28px auto !important;
+    }
+
     div.stButton > button {
         background: linear-gradient(135deg, #FF6F00 0%, #FF8F00 100%) !important;
         color: #FFFFFF !important;
         border: none !important;
         border-radius: 14px !important;
-        padding: 16px 44px !important;
+        padding: 16px 48px !important;
         font-size: 1.15rem !important;
         font-weight: 800 !important;
         letter-spacing: 0.02em !important;
@@ -131,8 +144,7 @@ def inject_theme_css():
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
         cursor: pointer !important;
         width: 100% !important;
-        max-width: 320px !important;
-        margin: 24px 0 !important;
+        max-width: 340px !important;
     }
 
     div.stButton > button:hover {
@@ -147,38 +159,64 @@ def inject_theme_css():
         box-shadow: 0 4px 12px rgba(255, 111, 0, 0.25) !important;
     }
 
-    /* Kotak Hasil Diagnosa (st.success) */
-    div[data-testid="stAlert"] {
-        background: linear-gradient(135deg, #FFF8E1 0%, #FFE0B2 100%) !important;
-        border: 2px solid #FFA726 !important;
-        border-radius: 16px !important;
-        padding: 20px 26px !important;
-        box-shadow: 0 8px 25px rgba(255, 111, 0, 0.15) !important;
+    /* ==============================================================
+       KOTAK HASIL DIAGNOSA (st.success) - TEMA ORANYE PUTIH BERSIH
+       Memperbaiki warna gelap / hijau yang membuat sakit mata
+       ============================================================== */
+    div[data-testid="stAlert"],
+    div[data-testid="stAlert"] > div,
+    div[data-testid="stNotificationContentSuccess"],
+    div[data-testid="stAlertContent"],
+    .stAlert,
+    .stAlert > div {
+        background: #FFFFFF !important;
+        background-color: #FFFFFF !important;
+        border: 2.5px solid #FF9800 !important;
+        border-radius: 18px !important;
+        box-shadow: 0 10px 30px rgba(255, 111, 0, 0.12) !important;
+        max-width: 960px !important;
+        margin: 24px auto !important;
+        padding: 18px 24px !important;
     }
 
-    div[data-testid="stAlert"] p {
-        color: #BF360C !important;
-        font-size: 1.25rem !important;
+    /* Ubah Icon Checklist Streamlit Menjadi Oranye Segar */
+    div[data-testid="stAlert"] svg {
+        fill: #FF6F00 !important;
+        color: #FF6F00 !important;
+    }
+
+    /* Teks Hasil Diagnosa - Oranye Tua Pekat & Sangat Jelas di Atas Latar Putih */
+    div[data-testid="stAlert"] p,
+    div[data-testid="stAlert"] span,
+    div[data-testid="stAlertContent"] p {
+        color: #D84315 !important;
+        font-size: 1.3rem !important;
         font-weight: 800 !important;
         letter-spacing: -0.01em !important;
+        line-height: 1.5 !important;
+        background: transparent !important;
+        text-shadow: none !important;
     }
 
-    /* Detail Similarity Text */
+    /* Detail Similarity Text & Nilai Similarity Utama */
     div[data-testid="stMarkdownContainer"] p {
-        color: #334155;
-        font-size: 1.02rem;
-        font-weight: 500;
-        line-height: 1.6;
+        color: #1E293B !important;
+        font-size: 1.05rem !important;
+        font-weight: 600 !important;
+        line-height: 1.6 !important;
+        max-width: 960px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
 def render_hero_sequence_section(frames_data):
     """
-    Merender Hero Section proporsional bergaya produk Apple (AirPods Pro):
-    - Gambar jeruk berukuran pas dan sangat tajam (tidak over-stretch atau buram)
-    - Latar putih bersih dengan tipografi besar 'Jeruk Anda?' dan 'Membusuk!'
-    - Scroll-driven frame sequence: scroll mouse menggerakkan perubahan jeruk dari segar hingga membusuk
+    Merender Hero Section dengan fitur Scroll-Lock cerdas (Apple Style):
+    - Saat frame sedang berjalan (masih di tengah): scroll layar MATI agar frame berputar penuh di tempat
+    - Saat frame sudah habis (jeruk terbelah sempurna): scroll layar NYALA dan TIDAK kembali ke awal lagi
+    - Jeruk diposisikan di pojok bawah layar saat awal dibuka dan melebar bebas tanpa terpotong
     """
     total_frames = len(frames_data)
     frames_json = json.dumps(frames_data)
@@ -202,23 +240,22 @@ def render_hero_sequence_section(frames_data):
           width: 100%;
           height: 100%;
           overflow: hidden;
-          background-color: #FFFFFF;
+          background-color: #FAFAFA;
           font-family: 'Plus Jakarta Sans', sans-serif;
         }}
         .hero-container {{
           position: relative;
           width: 100%;
           height: 100%;
-          min-height: 640px;
-          background: #FFFFFF;
+          min-height: 860px;
+          background: #FAFAFA;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
           align-items: center;
           overflow: hidden;
-          border-radius: 24px;
         }}
-        /* Canvas Khusus Hero Section */
+        /* Canvas Penuh Lebar agar Jeruk Bebas Melebar */
         #hero-canvas {{
           position: absolute;
           top: 0;
@@ -228,14 +265,14 @@ def render_hero_sequence_section(frames_data):
           z-index: 1;
           cursor: ns-resize;
         }}
-        /* Tipografi Mengambang di Atas Hero */
+        /* Tipografi Mengambang di Bagian Atas Layar */
         .typography-overlay {{
           position: relative;
           z-index: 10;
-          padding: 28px 24px 0 24px;
+          padding: 32px 24px 0 24px;
           text-align: center;
           pointer-events: none;
-          max-width: 700px;
+          max-width: 780px;
         }}
         .badge-pill {{
           display: inline-flex;
@@ -248,7 +285,7 @@ def render_hero_sequence_section(frames_data):
           font-weight: 700;
           padding: 6px 16px;
           border-radius: 30px;
-          margin-bottom: 10px;
+          margin-bottom: 12px;
           letter-spacing: 0.03em;
           box-shadow: 0 2px 8px rgba(230, 81, 0, 0.08);
         }}
@@ -318,7 +355,7 @@ def render_hero_sequence_section(frames_data):
           pointer-events: none;
           opacity: 1;
           transition: opacity 0.35s ease;
-          margin-bottom: 18px;
+          margin-bottom: 24px;
         }}
         .mouse-icon {{
           width: 22px;
@@ -346,7 +383,7 @@ def render_hero_sequence_section(frames_data):
     </head>
     <body>
       <div class="hero-container" id="hero-container">
-        <!-- Canvas Gambar Jeruk yang Tajam & Terpusat -->
+        <!-- Canvas Gambar Jeruk Penuh Lebar -->
         <canvas id="hero-canvas"></canvas>
 
         <div class="typography-overlay">
@@ -363,7 +400,7 @@ def render_hero_sequence_section(frames_data):
           <div class="mouse-icon">
             <div class="wheel-dot"></div>
           </div>
-          <span>Scroll ke bawah untuk melihat perubahan</span>
+          <span>Scroll untuk memutar frame</span>
         </div>
       </div>
 
@@ -422,26 +459,86 @@ def render_hero_sequence_section(frames_data):
           ctx.imageSmoothingEnabled = true;
           ctx.imageSmoothingQuality = 'high';
 
-          // Clear dengan latar putih bersih
-          ctx.fillStyle = '#FFFFFF';
+          // Clear dengan latar bersih
+          ctx.fillStyle = '#FAFAFA';
           ctx.fillRect(0, 0, rect.width, rect.height);
 
-          // Penskalaan Proporsional & Tajam (Apple AirPods Style)
-          // Menjaga jeruk berada pada diameter optimal (~420px) agar detail tekstur kulit jeruk super tajam
-          const targetHeight = Math.min(rect.height * 0.72, 420);
-          const scale = targetHeight / 693; // 693px adalah tinggi objek jeruk asli pada frame 1920x1080
+          // Penskalaan Proporsional agar lebar tidak terpotong
+          const preferredHeight = Math.min(rect.height * 0.58, 410);
+          const scaleByHeight = preferredHeight / 693;
+          const maxAllowedWidth = rect.width * 0.95;
+          const scaleByWidth = maxAllowedWidth / img.width;
+          const scale = Math.min(scaleByHeight, scaleByWidth);
 
           const drawW = img.width * scale;
           const drawH = img.height * scale;
+          
+          // Posisi X di tengah persis
           const drawX = (rect.width - drawW) / 2;
-          const drawY = (rect.height - drawH) / 2 + 35; // Beri sedikit offset ke bawah tipografi
+          
+          // Posisi Y di pojok bawah layar saat awal dibuka (scroll = 0)
+          const drawY = rect.height - drawH - 30;
 
           ctx.drawImage(img, drawX, drawY, drawW, drawH);
           ctx.restore();
         }}
 
-        let currentProgress = 0.0;
-        let targetProgress = 0.0;
+        // Deteksi Posisi Scroll Streamlit
+        function getScrollPosition() {{
+          let top = 0;
+          const candidates = [
+            pDoc.querySelector('[data-testid="stAppViewContainer"]'),
+            pDoc.querySelector('section.main'),
+            pDoc.querySelector('[data-testid="stMain"]'),
+            pDoc.documentElement,
+            pDoc.body
+          ];
+          for (let el of candidates) {{
+            if (el && el.scrollTop > top) {{
+              top = el.scrollTop;
+            }}
+          }}
+          if (pWin.scrollY > top) top = pWin.scrollY;
+          if (pWin.pageYOffset > top) top = pWin.pageYOffset;
+          return top;
+        }}
+
+        // Fungsi Kunci & Buka Scroll Layar Utama Streamlit
+        function lockPageScroll() {{
+          const containers = [
+            pDoc.querySelector('[data-testid="stAppViewContainer"]'),
+            pDoc.querySelector('section.main'),
+            pDoc.body,
+            pDoc.documentElement
+          ];
+          containers.forEach(el => {{
+            if (el) el.style.overflow = 'hidden';
+          }});
+        }}
+
+        function unlockPageScroll() {{
+          const containers = [
+            pDoc.querySelector('[data-testid="stAppViewContainer"]'),
+            pDoc.querySelector('section.main'),
+            pDoc.body,
+            pDoc.documentElement
+          ];
+          containers.forEach(el => {{
+            if (el) el.style.overflow = '';
+          }});
+        }}
+
+        // Inisialisasi State:
+        // Jika user sedang berada di bawah (misal saat centang checkbox / diagnosa), jangan kunci scroll
+        const initialTop = getScrollPosition();
+        let targetProgress = initialTop > 60 ? 1.0 : 0.0;
+        let currentProgress = targetProgress;
+
+        if (initialTop <= 60) {{
+          lockPageScroll(); // Matikan scroll layar awal saat frame masih di hero
+        }} else {{
+          unlockPageScroll();
+        }}
 
         function updateUI(progress) {{
           if (progress > 0.04) {{
@@ -473,6 +570,7 @@ def render_hero_sequence_section(frames_data):
         function renderLoop() {{
           currentProgress += (targetProgress - currentProgress) * 0.22;
 
+          // Clamp frameIdx agar ketika habis tetap berada di frame terakhir (TIDAK KEMBALI KE AWAL)
           const frameIdx = Math.min(TOTAL_FRAMES - 1, Math.max(0, Math.round(currentProgress * (TOTAL_FRAMES - 1))));
           drawFrame(frameIdx);
           updateUI(currentProgress);
@@ -481,51 +579,104 @@ def render_hero_sequence_section(frames_data):
         }}
         requestAnimationFrame(renderLoop);
 
-        // 1. Mouse Wheel Scroll Handling pada Hero Section
-        const heroEl = document.getElementById('hero-container');
-        heroEl.addEventListener('wheel', (e) => {{
-          // Jika scroll ke bawah dan sequence belum selesai, scrub frame
-          if (e.deltaY > 0 && targetProgress < 1.0) {{
-            e.preventDefault();
-            targetProgress = Math.min(1.0, targetProgress + e.deltaY * 0.0016);
-          }}
-          // Jika scroll ke atas dan belum di awal, scrub mundur
-          else if (e.deltaY < 0 && targetProgress > 0.0) {{
-            e.preventDefault();
-            targetProgress = Math.max(0.0, targetProgress + e.deltaY * 0.0016);
-          }}
-          // Jika targetProgress >= 1.0 dan terus scroll ke bawah, halaman bergulir ke section orange di bawahnya
-        }}, {{ passive: false }});
+        // ==============================================================
+        // LOGIKA SCROLL-LOCK CERDAS (APPLE STYLE):
+        // 1. Saat frame masih berjalan: scroll layar MATI, scroll mouse memutar frame
+        // 2. Saat frame sudah habis: scroll layar NYALA, langsung scroll halaman ke bawah
+        // 3. Frame TIDAK KEMBALI KE AWAL lagi saat habis
+        // ==============================================================
+        function handleWheelScroll(e) {{
+          const currentTop = getScrollPosition();
 
-        // 2. Sinkronisasi dengan Scroll Window Halaman Streamlit
-        function getScrollPosition() {{
-          let top = 0;
-          const candidates = [
-            pDoc.querySelector('[data-testid="stAppViewContainer"]'),
-            pDoc.querySelector('section.main'),
-            pDoc.querySelector('[data-testid="stMain"]'),
-            pDoc.documentElement,
-            pDoc.body
-          ];
-          for (let el of candidates) {{
-            if (el && el.scrollTop > top) {{
-              top = el.scrollTop;
+          // KONDISI 1: Berada di atas dan frame belum habis (0.0 <= targetProgress < 1.0)
+          if (currentTop <= 15 && targetProgress < 1.0) {{
+            if (e.deltaY > 0) {{
+              // Scroll ke bawah: putar frame maju
+              e.preventDefault();
+              targetProgress = Math.min(1.0, targetProgress + e.deltaY * 0.0016);
+              
+              if (targetProgress >= 0.99) {{
+                targetProgress = 1.0;
+                unlockPageScroll(); // Frame HABIS: NYALAKAN SCROLL LAYAR!
+              }} else {{
+                lockPageScroll(); // Frame BELUM HABIS: MATIKAN SCROLL LAYAR!
+              }}
+            }} else if (e.deltaY < 0 && targetProgress > 0.0) {{
+              // Scroll ke atas: putar frame mundur
+              e.preventDefault();
+              targetProgress = Math.max(0.0, targetProgress + e.deltaY * 0.0016);
+              lockPageScroll();
             }}
           }}
-          if (pWin.scrollY > top) top = pWin.scrollY;
-          if (pWin.pageYOffset > top) top = pWin.pageYOffset;
-          return top;
-        }}
-
-        function onPageScroll() {{
-          const top = getScrollPosition();
-          if (top >= 0 && top <= 500) {{
-            targetProgress = Math.min(1.0, top / 420);
+          // KONDISI 2: Frame SUDAH HABIS (targetProgress >= 1.0)
+          else if (targetProgress >= 1.0) {{
+            unlockPageScroll(); // Pastikan scroll layar selalu nyala
+            
+            // Jika user scroll ke atas sampai mentok ke puncak halaman (top <= 5), barulah frame bisa diputar mundur
+            if (currentTop <= 5 && e.deltaY < 0) {{
+              e.preventDefault();
+              targetProgress = Math.max(0.0, targetProgress + e.deltaY * 0.0016);
+              lockPageScroll();
+            }}
+            // Jika scroll ke bawah, BIARKAN HALAMAN BERGULIR SECARA ALAMI (TIDAK e.preventDefault)
           }}
         }}
 
-        pDoc.addEventListener('scroll', onPageScroll, {{ capture: true, passive: true }});
-        pWin.addEventListener('scroll', onPageScroll, {{ capture: true, passive: true }});
+        // Touch handling untuk layar sentuh / mobile
+        let touchStartY = 0;
+        function handleTouchStart(e) {{
+          if (e.touches && e.touches.length > 0) {{
+            touchStartY = e.touches[0].clientY;
+          }}
+        }}
+
+        function handleTouchMove(e) {{
+          if (!e.touches || e.touches.length === 0) return;
+          const currentY = e.touches[0].clientY;
+          const deltaY = touchStartY - currentY;
+          touchStartY = currentY;
+
+          const currentTop = getScrollPosition();
+
+          if (currentTop <= 15 && targetProgress < 1.0) {{
+            if (deltaY > 0) {{
+              e.preventDefault();
+              targetProgress = Math.min(1.0, targetProgress + deltaY * 0.0035);
+              if (targetProgress >= 0.99) {{
+                targetProgress = 1.0;
+                unlockPageScroll();
+              }} else {{
+                lockPageScroll();
+              }}
+            }} else if (deltaY < 0 && targetProgress > 0.0) {{
+              e.preventDefault();
+              targetProgress = Math.max(0.0, targetProgress + deltaY * 0.0035);
+              lockPageScroll();
+            }}
+          }} else if (targetProgress >= 1.0) {{
+            unlockPageScroll();
+            if (currentTop <= 5 && deltaY < 0) {{
+              e.preventDefault();
+              targetProgress = Math.max(0.0, targetProgress + deltaY * 0.0035);
+              lockPageScroll();
+            }}
+          }}
+        }}
+
+        // Pasang event listeners pada komponen hero dan window utama
+        const heroEl = document.getElementById('hero-container');
+        heroEl.addEventListener('wheel', handleWheelScroll, {{ passive: false }});
+        pWin.addEventListener('wheel', handleWheelScroll, {{ passive: false }});
+        pDoc.addEventListener('wheel', handleWheelScroll, {{ passive: false }});
+
+        heroEl.addEventListener('touchstart', handleTouchStart, {{ passive: true }});
+        pWin.addEventListener('touchstart', handleTouchStart, {{ passive: true }});
+        pDoc.addEventListener('touchstart', handleTouchStart, {{ passive: true }});
+
+        heroEl.addEventListener('touchmove', handleTouchMove, {{ passive: false }});
+        pWin.addEventListener('touchmove', handleTouchMove, {{ passive: false }});
+        pDoc.addEventListener('touchmove', handleTouchMove, {{ passive: false }});
+
         window.addEventListener('resize', () => {{
           const frameIdx = Math.min(TOTAL_FRAMES - 1, Math.max(0, Math.round(currentProgress * (TOTAL_FRAMES - 1))));
           drawFrame(frameIdx);
@@ -534,23 +685,24 @@ def render_hero_sequence_section(frames_data):
     </body>
     </html>
     """
-    components.html(component_html, height=660, scrolling=False)
+    components.html(component_html, height=860, scrolling=False)
 
 def render_big_orange_callout_section():
     """
-    Merender Section Teks Besar dengan Background Oranye Hangat (Bergaya Apple Image 3):
+    Merender Section Teks Besar dengan Background Oranye Hangat (Bergaya Apple):
     - Background oranye segar yang memukau
     - Judul besar 'Cek penyakit jeruk Anda sebelum telat!' berwarna putih murni tebal
-    - Kontras sangat tinggi, bersih, dan jelas terbaca
+    - Beri jarak atas lega (margin-top: 80px) agar memberi ruang saat jeruk terbelah
     """
     st.markdown("""
     <div style="
         background: linear-gradient(135deg, #FF6F00 0%, #E65100 100%);
         border-radius: 28px;
-        padding: 56px 40px;
-        margin: 32px auto 40px auto;
+        padding: 58px 44px;
+        margin: 80px auto 44px auto;
+        max-width: 960px;
         text-align: center;
-        box-shadow: 0 18px 45px rgba(255, 111, 0, 0.25);
+        box-shadow: 0 20px 50px rgba(255, 111, 0, 0.28);
         color: #FFFFFF;
     ">
         <div style="
@@ -606,10 +758,10 @@ def tampilkan_hero_animasi():
     except Exception:
         pass
 
-    # 1. Suntikkan styling tema dengan kontras warna tinggi
+    # 1. Suntikkan styling tema dengan kontras warna tinggi & ruang lebar
     inject_theme_css()
 
-    # 2. Muat frame gambar dan render Hero Section Tajam (Apple Style)
+    # 2. Muat frame gambar dan render Hero Section dengan Scroll-Lock cerdas
     frames = load_and_encode_frames("frames")
     if frames:
         render_hero_sequence_section(frames)
