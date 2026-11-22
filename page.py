@@ -149,9 +149,9 @@ def main_page():
                 if hasil_akhir[i] > 0:
                     st.write(f"{df_penyakit[i]} : {hasil_akhir[i]:.4f}")
 
-    st.write("Anda ingin menambahkan penyakit baru?")
-    if st.button("Tambah Penyakit Baru", key="btn_tambah_penyakit"):
-        st.session_state.page = "tambah_penyakit"
+    st.write("Ada perhitungan yang salah?")
+    if st.button("Edit basis sebagai pakar", key="btn_edit_hapus_penyakit"):
+        st.session_state.page = "edit_penyakit"
         st.rerun()
 
     st.divider()
@@ -235,4 +235,145 @@ def tambah_penyakit_page():
     if st.button("Kunci & Kembali", key="btn_kunci_kembali_penyakit"):
         st.session_state.akses_pakar = False
         st.session_state.page = "main"
+        st.rerun()
+
+
+
+def edit_penyakit_page():
+    if "akses_pakar" not in st.session_state:
+        st.session_state.akses_pakar = False
+
+    if not st.session_state.akses_pakar:
+        st.title("🔒 Akses Basis Pengetahuan")
+        st.info("Fitur ini dikunci khusus untuk pakar agar validitas bobot penilaian penyakit tetap terjaga.")
+        
+        input_kunci = st.text_input("Masukkan Kunci Pakar", type="password", key="input_kunci_edit")
+        if st.button("Buka Kunci", type="primary", key="btn_buka_kunci_edit"):
+            if input_kunci == KUNCI_PAKAR:
+                st.session_state.akses_pakar = True
+                st.rerun()
+            else:
+                st.error("Kunci salah!")
+        if st.button("Kembali", key="btn_kembali_terkunci_edit"):
+            st.session_state.page = "main"
+            st.rerun()
+        return
+
+    df_gejala = []
+    with open("dataGejala.csv", "r") as f:
+        for baris in f:
+            bersih = baris.replace("\n", "").replace('"', '')
+            if bersih != "":
+                df_gejala = df_gejala + [bersih]
+
+    df_penyakit = []
+    with open("dataPenyakit.csv", "r") as f:
+        for baris in f:
+            bersih = baris.replace("\n", "").replace('"', '')
+            if bersih != "":
+                df_penyakit = df_penyakit + [bersih]
+
+    vektor_matrix = []
+    with open("vektorPenyakit.csv", "r") as f:
+        for baris in f:
+            if "," in baris:
+                pecah = baris.replace("\n", "").split(",")
+                angka = [float(x) for x in pecah]
+                vektor_matrix = vektor_matrix + [angka]
+
+    st.title("Edit Penyakit")
+
+    if len(df_penyakit) == 0:
+        st.warning("Belum ada data penyakit.")
+        if st.button("Kembali", key="btn_kembali_dari_edit"):
+            st.session_state.akses_pakar = False
+            st.session_state.page = "main"
+            st.rerun()
+        return
+
+    pilih_penyakit = st.selectbox("Pilih Penyakit", df_penyakit, key="pilih_edit_penyakit")
+    
+    index_pilih = 0
+    for i in range(len(df_penyakit)):
+        if df_penyakit[i] == pilih_penyakit:
+            index_pilih = i
+
+    penyakit_terpilih = st.text_input("Nama Penyakit", value=df_penyakit[index_pilih], key="nama_penyakit_" + str(index_pilih))
+    st.write("Sesuaikan bobot gejala untuk penyakit ini:")
+
+    bobot_revisi = []
+    for i in range(len(df_gejala)):
+        nilai_awal = vektor_matrix[index_pilih][i]
+        b = st.slider(df_gejala[i], 0.0, 1.0, nilai_awal, 0.01, key="slider_edit_penyakit_" + str(index_pilih) + "gejala_ke_" + str(i))
+        bobot_revisi = bobot_revisi + [b]
+
+    st.divider()
+
+    col_kembali, col_simpan, col_hapus = st.columns(3)
+
+    with col_kembali:
+        if st.button("Kembali", key="btn_kembali_edit", use_container_width=True):
+            st.session_state.akses_pakar = False
+            st.session_state.page = "main"
+            st.rerun()
+
+    with col_simpan:
+        if st.button("Simpan", type="primary", key="btn_simpan_edit", use_container_width=True):
+            ada_bobot = False
+            for b in bobot_revisi:
+                if b > 0:
+                    ada_bobot = True
+
+            if penyakit_terpilih == "":
+                st.error("Nama penyakit tidak boleh kosong!")
+            elif ada_bobot == False:
+                st.error("Minimal satu gejala harus memiliki bobot lebih dari 0!")
+            else:
+                df_penyakit[index_pilih] = penyakit_terpilih
+                vektor_matrix[index_pilih] = bobot_revisi
+
+                with open("dataPenyakit.csv", "w") as f:
+                    for p in df_penyakit:
+                        penyakit_final = '"' + p + '"' if "," in p else p
+                        print(penyakit_final, file=f)
+
+                with open("vektorPenyakit.csv", "w") as f:
+                    for baris in vektor_matrix:
+                        vektor = ""
+                        for i in range(len(baris)):
+                            nilai = "0" if baris[i] == 0 else str(baris[i])
+                            vektor += nilai
+                            if i < len(baris) - 1:
+                                vektor += ","
+                        print(vektor, file=f)
+
+                st.success("Perubahan penyakit berhasil disimpan!")
+
+    with col_hapus:
+        if st.button("Hapus", key="btn_hapus_edit", use_container_width=True):
+            if len(df_penyakit) <= 1:
+                st.error("Minimal harus tersisa 1 penyakit di sistem!")
+            else:
+                with open("dataPenyakit.csv", "w") as f:
+                    for i in range(len(df_penyakit)):
+                        if i != index_pilih:
+                            penyakit_final = '"' + df_penyakit[i] + '"' if "," in df_penyakit[i] else df_penyakit[i]
+                            print(penyakit_final, file=f)
+
+                with open("vektorPenyakit.csv", "w") as f:
+                    for i in range(len(vektor_matrix)):
+                        if i != index_pilih:
+                            baris = vektor_matrix[i]
+                            vektor = ""
+                            for j in range(len(baris)):
+                                nilai = "0" if baris[j] == 0 else str(baris[j])
+                                vektor += nilai
+                                if j < len(baris) - 1:
+                                    vektor += ","
+                            print(vektor, file=f)
+                st.rerun()
+
+    st.write("Anda ingin menambahkan penyakit baru?")
+    if st.button("Tambah Penyakit Baru", key="btn_tambah_penyakit"):
+        st.session_state.page = "tambah_penyakit"
         st.rerun()
