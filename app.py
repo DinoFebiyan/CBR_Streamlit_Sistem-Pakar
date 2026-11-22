@@ -1,5 +1,5 @@
 import streamlit as st
-from page import main_page, tambah_gejala_page
+from page import main_page, tambah_gejala_page, tambah_penyakit_page
 
 st.set_page_config(
     page_title="Orange Checker",
@@ -12,6 +12,7 @@ if "page" not in st.session_state:
 
 if st.session_state.page == "main":
     main_page()
-else:
-    if st.session_state.page == "tambah_gejala":
-        tambah_gejala_page()
+elif st.session_state.page == "tambah_gejala":
+    tambah_gejala_page()
+elif st.session_state.page == "tambah_penyakit":
+    tambah_penyakit_page()

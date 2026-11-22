@@ -149,10 +149,10 @@ def main_page():
                 if hasil_akhir[i] > 0:
                     st.write(f"{df_penyakit[i]} : {hasil_akhir[i]:.4f}")
 
-    # st.write("Anda ingin menambahkan penyakit baru?")
-    # if st.button("Tambah Penyakit Baru", key="btn_tambah_penyakit"):
-    #     st.session_state.page = "tambah_penyakit"
-    #     st.rerun()
+    st.write("Anda ingin menambahkan penyakit baru?")
+    if st.button("Tambah Penyakit Baru", key="btn_tambah_penyakit"):
+        st.session_state.page = "tambah_penyakit"
+        st.rerun()
 
     st.divider()
     st.html("""
@@ -162,3 +162,77 @@ def main_page():
             <strong><a href="https://ojs.trigunadharma.ac.id/index.php/jsi/article/download/8463/3141" target="_blank" style="color: #FF7A00; text-decoration: none;">Artikel Penelitian</a></strong>
         </div>
     """)
+
+def tambah_penyakit_page():
+    if "akses_pakar" not in st.session_state:
+        st.session_state.akses_pakar = False
+
+    if st.session_state.akses_pakar == False:
+        st.title("🔒 Akses Basis Pengetahuan")
+        st.info("Fitur ini dikunci khusus untuk pakar agar validitas bobot penilaian penyakit tetap terjaga.")
+        
+        input_kunci = st.text_input("Masukkan Kunci Pakar", type="password", key="input_kunci_penyakit")
+        if st.button("Buka Kunci", type="primary", key="btn_buka_kunci_penyakit"):
+            if input_kunci == KUNCI_PAKAR:
+                st.session_state.akses_pakar = True
+                st.rerun()
+            else:
+                st.error("Kunci salah!")
+        if st.button("Kembali", key="btn_kembali_terkunci_penyakit"):
+            st.session_state.page = "main"
+            st.rerun()
+        return
+
+    df_gejala = []
+    with open("dataGejala.csv", "r") as dataGejala:
+        for baris in dataGejala:
+            bersih = baris.replace("\n", "").replace('"', '')
+            if bersih != "":
+                df_gejala = df_gejala + [bersih]
+
+    st.title("Tambah Penyakit Baru")
+
+    with st.form("form_tambah_penyakit"):
+        nama_penyakit = st.text_input("Nama Penyakit")
+        st.write("Tentukan bobot setiap gejala (biarkan 0 jika gejala tidak terkait):")
+
+        daftar_bobot = []
+        for i in range(len(df_gejala)):
+            bobot = st.slider(df_gejala[i], 0.0, 1.0, 0.0, 0.01)
+            daftar_bobot = daftar_bobot + [bobot]
+
+        submitted = st.form_submit_button("Simpan Penyakit", type="primary")
+        if submitted:
+            ada_bobot = False
+            for i in daftar_bobot:
+                if i > 0:
+                    ada_bobot = True
+            if nama_penyakit == "":
+                st.error("Nama penyakit tidak boleh kosong!")
+            elif ada_bobot == False:
+                st.error("Minimal satu gejala harus memiliki bobot lebih dari 0!")
+            else:
+                if "," in nama_penyakit:
+                    penyakit_simpan = '"' + nama_penyakit + '"'
+                else:
+                    penyakit_simpan = nama_penyakit
+
+                with open("dataPenyakit.csv", "a") as csvDataPenyakit:
+                    print(penyakit_simpan, file=csvDataPenyakit)
+
+                teks_vektor = ""
+                for i in range(len(daftar_bobot)):
+                    nilai = "0" if daftar_bobot[i] == 0 else str(daftar_bobot[i])
+                    teks_vektor += nilai
+                    if i < len(daftar_bobot) - 1:
+                        teks_vektor += ","
+
+                with open("vektorPenyakit.csv", "a") as csvVektor:
+                    print(teks_vektor, file=csvVektor)
+
+                st.success("Penyakit baru berhasil ditambahkan!")
+
+    if st.button("Kunci & Kembali", key="btn_kunci_kembali_penyakit"):
+        st.session_state.akses_pakar = False
+        st.session_state.page = "main"
+        st.rerun()
