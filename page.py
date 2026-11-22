@@ -1,7 +1,27 @@
 import streamlit as st
 from function import hitung_cosine
 
+KUNCI_PAKAR = "pakar123"
+
 def tambah_gejala_page():
+    if "akses_pakar" not in st.session_state:
+        st.session_state.akses_pakar = False
+
+    if st.session_state.akses_pakar == False:
+        st.title("🔒 Akses Basis Pengetahuan")
+        st.info("Fitur ini dikunci khusus untuk pakar agar validitas bobot penilaian penyakit tetap terjaga.")
+        
+        input_kunci = st.text_input("Masukkan Kunci Pakar", type="password", key="input_kunci_pakar")
+        if st.button("Buka Kunci", type="primary", key="btn_buka_kunci"):
+            if input_kunci == KUNCI_PAKAR:
+                st.session_state.akses_pakar = True
+                st.rerun()
+            else:
+                st.error("Kunci salah!")
+        if st.button("Kembali", key="btn_kembali_terkunci"):
+            st.session_state.page = "main"
+            st.rerun()
+        return
 
     df_penyakit = []
     with open("dataPenyakit.csv", "r") as dataPenyakit:
@@ -9,6 +29,7 @@ def tambah_gejala_page():
             bersih = baris.replace("\n", "")
             if bersih != "":
                 df_penyakit = df_penyakit + [bersih]
+
     st.title("Tambah Gejala Baru")
     
     with st.form("form_tambah_gejala"):
@@ -16,13 +37,14 @@ def tambah_gejala_page():
         penyakit_terkait = st.selectbox("Pilih Penyakit Terkait", df_penyakit)
         bobot = st.slider("Bobot", 0.1, 1.0, 0.5, 0.01)
         
-        submitted = st.form_submit_button("Simpan")
+        submitted = st.form_submit_button("Simpan", type="primary")
         if submitted:
             if nama_gejala == "":
                 st.error("Nama gejala tidak boleh kosong")
             else:
+                gejala_simpan = '"' + nama_gejala + '"' if "," in nama_gejala else nama_gejala
                 with open("dataGejala.csv", "a") as csvDataGejala:
-                    print(nama_gejala, file=csvDataGejala)
+                    print(gejala_simpan, file=csvDataGejala)
                 
                 vektor_matrix = []
                 with open("vektorPenyakit.csv", "r") as csvVektor:
@@ -36,15 +58,16 @@ def tambah_gejala_page():
                 
                 with open("vektorPenyakit.csv", "w") as csvVektor:
                     for baris in vektor_matrix:
-                            teks = ""
-                            for i in range(len(baris)):
-                                teks += str(baris[i])
-                                if i < len(baris) - 1:
-                                    teks += ","
-                            print(teks, file=csvVektor)            
+                        teks = ""
+                        for i in range(len(baris)):
+                            teks += str(baris[i])
+                            if i < len(baris) - 1:
+                                teks += ","
+                        print(teks, file=csvVektor)            
                 st.success("Gejala berhasil ditambahkan!")
 
-    if st.button("Kembali"):
+    if st.button("Kunci & Kembali", key="btn_kunci_kembali"):
+        st.session_state.akses_pakar = False
         st.session_state.page = "main"
         st.rerun()
 
@@ -95,7 +118,12 @@ def main_page():
         pilih = st.checkbox(gejala)
         kasusBaru = kasusBaru + [1] if pilih else kasusBaru + [0]
 
-    if st.button("Proses Diagnosa", type="primary"):
+    st.write("Anda pakar yang menemukan gejala baru?")
+    if st.button("Tambah Gejala", key="btn_tambah_gejala"):
+        st.session_state.page = "tambah_gejala"
+        st.rerun()
+
+    if st.button("Proses Diagnosa", type="primary", key="btn_proses_diagnosa"):
 
         hasil_akhir = []
 
@@ -121,10 +149,10 @@ def main_page():
                 if hasil_akhir[i] > 0:
                     st.write(f"{df_penyakit[i]} : {hasil_akhir[i]:.4f}")
 
-    st.write("Tidak menemukan gejala yang anda alami?")
-    if st.button("Tambah Gejala Baru"):
-        st.session_state.page = "tambah_gejala"
-        st.rerun()
+    # st.write("Anda ingin menambahkan penyakit baru?")
+    # if st.button("Tambah Penyakit Baru", key="btn_tambah_penyakit"):
+    #     st.session_state.page = "tambah_penyakit"
+    #     st.rerun()
 
     st.divider()
     st.html("""
